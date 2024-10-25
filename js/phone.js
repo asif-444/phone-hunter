@@ -1,5 +1,5 @@
-const loadPhone = async () => {
-    const res = await fetch('https://openapi.programming-hero.com/api/phones?search=iphone');
+const loadPhone = async (searchText) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`);
     const data = await res.json();
     const phones = data.data;
     // console.log(phones);
@@ -12,12 +12,26 @@ const displayPhones = phones => {
 
     // Step 1
     const phoneContainer = document.getElementById('phone-container');
+    // clear phone container cards before adding new cards
+    phoneContainer.textContent = '';
+
+    // display 'show all' button if there are more than 10 phones
+    const showAllContainer = document.getElementById('show-all-container')
+    if (phones.length > 10) {
+        showAllContainer.classList.remove('hidden');
+    }
+    else {
+        showAllContainer.classList.add('hidden');
+    }
+
+    // display first 10 phones only
+    phones = phones.slice(0, 10);
 
     phones.forEach(phone => {
         console.log(phone);
         // Step 2. create a div
         const phoneCard = document.createElement('div');
-        phoneCard.classList = 'card bg-base-100 w-96 shadow-xl';
+        phoneCard.classList = 'card bg-base-100 p-4 shadow-xl';
         // Step 3. set inner html
         phoneCard.innerHTML = `
         <figure>
@@ -38,4 +52,12 @@ const displayPhones = phones => {
     })
 }
 
-loadPhone();
+// handle search button
+const handleSearch = () => {
+    const searchField = document.getElementById('search-field');
+    const searchText = searchField.value;
+    console.log(searchText);
+    loadPhone(searchText);
+}
+
+// loadPhone();
