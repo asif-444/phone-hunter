@@ -23,7 +23,7 @@ const displayPhones = (phones, isShowAll) => {
     else {
         showAllContainer.classList.add('hidden');
     }
-    console.log('is show all', isShowAll)
+    // console.log('is show all', isShowAll)
 
     // display first 10 phones only if not show all
     if (isShowAll) {
@@ -31,7 +31,7 @@ const displayPhones = (phones, isShowAll) => {
     }
 
     phones.forEach(phone => {
-        console.log(phone);
+        // console.log(phone);
         // Step 2. create a div
         const phoneCard = document.createElement('div');
         phoneCard.classList = 'card bg-base-100 p-4 shadow-xl';
@@ -45,7 +45,7 @@ const displayPhones = (phones, isShowAll) => {
                         <h2 class="card-title">${phone.phone_name}</h2>
                         <p>If a dog chews shoes whose shoes does he choose?</p>
                         <div class="card-actions justify-end">
-                            <button class="btn btn-primary">Buy Now</button>
+                            <button onclick="handleShowDetail('${phone.slug}')" class="btn btn-primary">Show Details</button>
                         </div>
                     </div>
                     `;
@@ -56,6 +56,36 @@ const displayPhones = (phones, isShowAll) => {
 
     // hide loading spinner
     toggleLoadingSpinner(false);
+}
+
+// 
+const handleShowDetail = async (id) => {
+    // console.log('clicked show details', id)
+    // load single phone data
+    const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`);
+    const data = await res.json();
+    console.log(data);
+    const phone = data.data;
+
+    showPhoneDetails(phone);
+}
+
+const showPhoneDetails = (phone) => {
+    console.log(phone);
+    const phoneName = document.getElementById('show-detail-phone-name');
+    phoneName.innerText = phone.name;
+
+    const showDetailContainer = document.getElementById('show-detail-container');
+
+    showDetailContainer.innerHTML =
+    `
+    <img src="${phone.image}" alt="" />
+    <p><span>Storage:</span>${phone.mainFeatures?.storage}</p>
+    <p><span>Display:</span>${phone?.mainFeatures?.displaySize}</p>
+    `
+
+    // show the modal
+    show_details_modal.showModal();
 }
 
 // handle search button
